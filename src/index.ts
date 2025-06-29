@@ -15,8 +15,6 @@ async function main() {
   app.use(express.json());
 
   app.post(`/bot`, (req, res) => {
-    console.log(`Received update: ${JSON.stringify(req.body)}`);
-
     bot.processUpdate(req.body);
     res.sendStatus(200);
   });

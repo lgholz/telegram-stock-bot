@@ -42,6 +42,8 @@ const runCheckAlarms = async () => {
 };
 
 async function checkAlarms() {
+  console.log();
+
   const alarms = await prisma.alarm.findMany();
   const prices = await getPrices(alarms);
 
@@ -53,6 +55,10 @@ async function checkAlarms() {
 }
 
 async function getPrices(alarms: { ticker: string }[]) {
+  if (alarms.length === 0) {
+    return {};
+  }
+
   const tickers = alarms.map((alarm) => alarm.ticker + ".SA"); // append .SA for B3  brazilian stocks
   const quotes = await yahooFinance.quote(tickers);
 
@@ -82,8 +88,8 @@ async function checkAlarm(alarm: Alarm, prices: Record<string, number>) {
     await sendTelegramMessage(
       alarm.chatId,
       `🚨 Alarm trigger for ${alarm.ticker}!
-       Current price: R$ ${currentPrice}
-       Direction: ${alarm.direction} | Target: R$ ${alarm.target}`
+       Current price: R$ ${currentPrice.toFixed(2)} |
+       Direction: ${alarm.direction} | Target: R$ ${alarm.target.toFixed(2)}`
     );
 
     // remove the alarm after triggering

@@ -32,6 +32,8 @@ export class StockBot {
 
     this.onCmdAlert();
     this.onCmdList();
+    this.onCmdRemove();
+    this.onCmdRemoveAll();
   }
 
   processUpdate(update: TelegramBot.Update) {
@@ -126,6 +128,72 @@ export class StockBot {
           "An error occurred while setting the alert."
         );
       }
+    });
+  };
+
+  private onCmdList = async () => {
+    this.bot.onText(/^\/list$/, async (msg) => {
+      const chatId = String(msg.chat.id);
+      const alarms = await this.prisma.alarm.findMany({
+        where: { chatId },
+      });
+
+      if (alarms.length === 0) {
+        await this.bot.sendMessage(chatId, "You have no active alerts.");
+        return;
+      }
+
+      const response = alarms
+        .map(
+          (alarm) =>
+            `${alarm.ticker} - ${alarm.direction} at R$ ${alarm.target.toFixed(
+              2
+            )}`
+        )
+        .join("\n");
+
+      await this.bot.sendMessage(chatId, `Your alerts:\n${response}`);
+    });
+  };
+
+  private onCmdRemove = async () => {
+    this.bot.onText(/^\/remove(?:\s+(.*))?$/, async (msg, match) => {
+      const chatId = String(msg.chat.id);
+      const ticker = match?.[1]?.toUpperCase().trim();
+      if (!ticker) {
+        await this.bot.sendMessage(
+          chatId,
+          "Usage: /remove TICKER\nExample: /remove PETR4"
+        );
+        return;
+      }
+
+      const result = await this.prisma.alarm.deleteMany({
+        where: { chatId, ticker },
+      });
+
+      if (result.count > 0) {
+        await this.bot.sendMessage(
+          chatId,
+          `Alert for ${ticker} has been removed.`
+        );
+      } else {
+        await this.bot.sendMessage(
+          chatId,
+          `No alert found for ticker ${ticker}.`
+        );
+      }
+    });
+  };
+
+  private onCmdRemoveAll = async () => {
+    this.bot.onText(/^\/removeall$/, async (msg) => {
+      const chatId = String(msg.chat.id);
+      await this.prisma.alarm.deleteMany({
+        where: { chatId },
+      });
+
+      await this.bot.sendMessage(chatId, "All alerts have been removed.");
     });
   };
 }
