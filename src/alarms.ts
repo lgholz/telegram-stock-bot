@@ -54,7 +54,7 @@ async function checkAlarms() {
   const alarms = await prisma.alarm.findMany();
   const prices = await getPrices(alarms);
 
-  console.log(`Obtained prices: ${JSON.stringify(prices)}`);
+  console.log(`Obtained prices: ${JSON.stringify(Object.keys(prices))}`);
 
   for (const alarm of alarms) {
     await checkAlarm(alarm, prices);
@@ -109,6 +109,6 @@ Condition: ${
     await sendTelegramMessage(alarm.chatId, message);
 
     // remove the alarm after triggering
-    // await prisma.alarm.delete({ where: { id: alarm.id } });
+    await prisma.alarm.delete({ where: { id: alarm.id } });
   }
 }

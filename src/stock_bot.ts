@@ -48,7 +48,7 @@ export class StockBot {
       if (!params) {
         await this.bot.sendMessage(
           chatId,
-          "Creates an alert for a stock price.\nUsage: /alert TICKER DIRECTION TARGET\nExample: /alert petr4 ABOVE 30.00"
+          "Creates an alert for a stock price.\nUsage: /alert TICKER CONDITION TARGET\nExample: /alert petr4 ABOVE 30.00"
         );
 
         return;
