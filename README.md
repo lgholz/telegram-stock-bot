@@ -25,6 +25,9 @@ The bot will notify you if PETR4 crosses R$37.50.
 
 ## Todo
 
-- [ ] /list and /cancel commands
 - [ ] Alert history
 - [ ] Web UI (optional)
+
+# How can be improved in case it have milions of alerts to manage
+
+todo
