@@ -1,0 +1,22 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model alarm {
+  id        Int      @id @default(autoincrement())
+  ticker    String
+  target    Float
+  direction Direction
+  createdAt DateTime @default(now())
+  telegram_chat_id String @default("6274335165")
+}
+
+enum Direction {
+  UP
+  DOWN
+}

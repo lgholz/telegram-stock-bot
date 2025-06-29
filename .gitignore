@@ -1,0 +1,8 @@
+.DS_Store
+launch.json
+
+node_modules
+prisma/migrations
+dist
+.env
+package-lock.json
