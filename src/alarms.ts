@@ -22,7 +22,7 @@ export const startAlarmsCheck = async () => {
   });
 
   runCheckAlarms(); // run immediately on startup
-  setInterval(runCheckAlarms, 10 * 1000); // check time to time
+  setInterval(runCheckAlarms, 60 * 1000); // check time to time
 };
 
 const runCheckAlarms = async () => {
@@ -82,8 +82,8 @@ async function checkAlarm(alarm: Alarm, prices: Record<string, number>) {
     await sendTelegramMessage(
       alarm.telegram_chat_id,
       `🚨 Alarm trigger for ${alarm.ticker}!
-              Current price: R$ ${currentPrice}
-              Direction: ${alarm.direction} | Target: R$ ${alarm.target}`
+            Current price: R$ ${currentPrice}
+            Direction: ${alarm.direction} | Target: R$ ${alarm.target}`
     );
 
     // remove the alarm after triggering

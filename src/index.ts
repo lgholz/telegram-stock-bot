@@ -9,6 +9,7 @@ const prisma = new PrismaClient();
 async function main() {
   const port = Number(process.env.PORT) || 3000;
   const bot = new StockBot();
+  await bot.init();
 
   const app = express();
   app.use(express.json());

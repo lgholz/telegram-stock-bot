@@ -9,11 +9,11 @@ generator client {
 
 model alarm {
   id        Int      @id @default(autoincrement())
+  chat_id   String   @default("6274335165")
   ticker    String
   target    Float
   direction Direction
   createdAt DateTime @default(now())
-  telegram_chat_id String @default("6274335165")
 }
 
 enum Direction {
