@@ -144,11 +144,12 @@ export class StockBot {
       }
 
       const response = alarms
+        .sort((a, b) => a.ticker.localeCompare(b.ticker))
         .map(
           (alarm) =>
-            `${alarm.ticker} - ${alarm.direction} at R$ ${alarm.target.toFixed(
-              2
-            )}`
+            `🔔 ${alarm.ticker} - ${
+              alarm.direction
+            } at R$ ${alarm.target.toFixed(2)}`
         )
         .join("\n");
 

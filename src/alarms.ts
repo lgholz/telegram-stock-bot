@@ -1,12 +1,19 @@
 import prismaPkg from "@prisma/client";
 import yahooFinance from "yahoo-finance2";
-import { sendTelegramMessage } from "./util.ts";
+import { formatDate, formatTime, sendTelegramMessage } from "./util.ts";
 
 type Alarm = prismaPkg.alarm;
 const { PrismaClient } = prismaPkg;
 const prisma = new PrismaClient();
 
 let isRunning = false; // avoid concurrent executions
+
+type Quote = {
+  price: number;
+  timestamp?: Date;
+  high?: number;
+  low?: number;
+};
 
 export const startAlarmsCheck = async () => {
   yahooFinance.suppressNotices(["yahooSurvey"]);
@@ -62,35 +69,44 @@ async function getPrices(alarms: { ticker: string }[]) {
   const tickers = alarms.map((alarm) => alarm.ticker + ".SA"); // append .SA for B3  brazilian stocks
   const quotes = await yahooFinance.quote(tickers);
 
-  const prices: Record<string, number> = {};
+  const prices: Record<string, Quote> = {};
   for (const quote of quotes) {
     if (quote.regularMarketPrice) {
       const ticker = quote.symbol.replace(".SA", "");
-      prices[ticker] = quote.regularMarketPrice;
+      prices[ticker] = {
+        price: quote.regularMarketPrice,
+        timestamp: quote.regularMarketTime,
+        high: quote.regularMarketDayHigh,
+        low: quote.regularMarketDayLow,
+      };
     }
   }
 
   return prices;
 }
 
-async function checkAlarm(alarm: Alarm, prices: Record<string, number>) {
-  const currentPrice = prices[alarm.ticker];
+async function checkAlarm(alarm: Alarm, prices: Record<string, Quote>) {
+  const quote = prices[alarm.ticker];
 
-  if (!currentPrice) {
+  if (!quote) {
     console.warn(`No price found for ticker ${alarm.ticker}`);
     return;
   }
 
   if (
-    (alarm.direction === "UP" && currentPrice >= alarm.target) ||
-    (alarm.direction === "DOWN" && currentPrice <= alarm.target)
+    (alarm.direction === "UP" && quote.price >= alarm.target) ||
+    (alarm.direction === "DOWN" && quote.price <= alarm.target)
   ) {
-    await sendTelegramMessage(
-      alarm.chatId,
-      `🚨 Alarm trigger for ${alarm.ticker}!
-       Current price: R$ ${currentPrice.toFixed(2)} |
-       Direction: ${alarm.direction} | Target: R$ ${alarm.target.toFixed(2)}`
-    );
+    const message = `
+🚨 Price Alert Triggered!
+
+Ticker: ${alarm.ticker} R$ ${quote.price.toFixed(2)}
+Condition: ${
+      alarm.direction === "UP" ? "Above" : "Below"
+    } R$ ${alarm.target.toFixed(2)}
+`;
+
+    await sendTelegramMessage(alarm.chatId, message);
 
     // remove the alarm after triggering
     // await prisma.alarm.delete({ where: { id: alarm.id } });
