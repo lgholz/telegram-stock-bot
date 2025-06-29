@@ -1,3 +1,30 @@
 # Stock Alert Bot
 
-**Stock Alert Bot** is an intelligent monitoring tool designed to keep you updated on the latest stock price movements. With customizable alert criteria, it continuously tracks your selected stocks and instantly notifies you of significant changes, helping you make timely investment decisions. Stay ahead in the market with real-time alerts and a user-friendly experience.
+A simple Telegram bot that monitors stock prices (B3/Bovespa supported) and sends real-time alerts when user-defined price thresholds are crossed. Ideal for traders or investors who want customizable notifications without checking charts all day.
+
+- Set alerts via Telegram commands
+- Supports "above" / "below" price triggers
+- Built with Node.js, TypeScript, Prisma, PostgreSQL
+- Uses Yahoo Finance (non-official API)
+- Sends instant alerts through Telegram
+
+## Example
+
+/alarm PETR4 above 37.50
+
+The bot will notify you if PETR4 crosses R$37.50.
+
+## Tech Stack
+
+- Node.js
+- TypeScript
+- Prisma
+- PostgreSQL
+- Yahoo Finance (unofficial)
+- node-telegram-bot-api
+
+## Todo
+
+- [ ] /list and /cancel commands
+- [ ] Alert history
+- [ ] Web UI (optional)
