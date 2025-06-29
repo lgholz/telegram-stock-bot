@@ -31,6 +31,7 @@ export class StockBot {
     ]);
 
     this.onCmdAlert();
+    this.onCmdList();
   }
 
   processUpdate(update: TelegramBot.Update) {
@@ -88,14 +89,14 @@ export class StockBot {
 
         // check if the ticker exists in the database
         const existingAlarm = await this.prisma.alarm.findFirst({
-          where: { telegram_chat_id: String(chatId), ticker },
+          where: { chatId, ticker },
         });
 
         if (!existingAlarm) {
           // create a new alarm
           await this.prisma.alarm.create({
             data: {
-              telegram_chat_id: chatId,
+              chatId,
               ticker,
               direction,
               target,

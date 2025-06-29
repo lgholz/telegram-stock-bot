@@ -80,10 +80,10 @@ async function checkAlarm(alarm: Alarm, prices: Record<string, number>) {
     (alarm.direction === "DOWN" && currentPrice <= alarm.target)
   ) {
     await sendTelegramMessage(
-      alarm.telegram_chat_id,
+      alarm.chatId,
       `🚨 Alarm trigger for ${alarm.ticker}!
-            Current price: R$ ${currentPrice}
-            Direction: ${alarm.direction} | Target: R$ ${alarm.target}`
+       Current price: R$ ${currentPrice}
+       Direction: ${alarm.direction} | Target: R$ ${alarm.target}`
     );
 
     // remove the alarm after triggering

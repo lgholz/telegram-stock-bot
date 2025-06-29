@@ -9,7 +9,7 @@ generator client {
 
 model alarm {
   id        Int      @id @default(autoincrement())
-  chat_id   String   @default("6274335165")
+  chatId   String   @default("6274335165")
   ticker    String
   target    Float
   direction Direction
