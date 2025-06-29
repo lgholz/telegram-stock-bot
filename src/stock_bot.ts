@@ -48,7 +48,7 @@ export class StockBot {
       if (!params) {
         await this.bot.sendMessage(
           chatId,
-          "Creates an alert for a stock price.\nUsage: /alert TICKER DIRECTION TARGET\nExample: /alert petr4 UP 30.00"
+          "Creates an alert for a stock price.\nUsage: /alert TICKER DIRECTION TARGET\nExample: /alert petr4 ABOVE 30.00"
         );
 
         return;
@@ -72,10 +72,10 @@ export class StockBot {
         }
 
         // validate direction
-        if (direction !== "UP" && direction !== "DOWN") {
+        if (direction !== "ABOVE" && direction !== "BELOW") {
           await this.bot.sendMessage(
             chatId,
-            `Invalid direction. Use UP or DOWN.`
+            `Invalid direction. Use ABOVE or BELOW.`
           );
           return;
         }
@@ -147,9 +147,9 @@ export class StockBot {
         .sort((a, b) => a.ticker.localeCompare(b.ticker))
         .map(
           (alarm) =>
-            `🔔 ${alarm.ticker} - ${
-              alarm.direction
-            } at R$ ${alarm.target.toFixed(2)}`
+            `🔔 ${alarm.ticker} - ${alarm.direction} R$ ${alarm.target.toFixed(
+              2
+            )}`
         )
         .join("\n");
 

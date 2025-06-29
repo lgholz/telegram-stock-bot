@@ -94,15 +94,15 @@ async function checkAlarm(alarm: Alarm, prices: Record<string, Quote>) {
   }
 
   if (
-    (alarm.direction === "UP" && quote.price >= alarm.target) ||
-    (alarm.direction === "DOWN" && quote.price <= alarm.target)
+    (alarm.direction === "ABOVE" && quote.price >= alarm.target) ||
+    (alarm.direction === "BELOW" && quote.price <= alarm.target)
   ) {
     const message = `
 🚨 Price Alert Triggered!
 
 Ticker: ${alarm.ticker} R$ ${quote.price.toFixed(2)}
 Condition: ${
-      alarm.direction === "UP" ? "Above" : "Below"
+      alarm.direction === "ABOVE" ? "Above" : "Below"
     } R$ ${alarm.target.toFixed(2)}
 `;
 

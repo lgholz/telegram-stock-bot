@@ -20,6 +20,6 @@ model alarm {
 }
 
 enum Direction {
-  UP
-  DOWN
+  ABOVE
+  BELOW
 }
