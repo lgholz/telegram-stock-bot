@@ -26,7 +26,9 @@ The bot will notify you if PETR4 crosses R$37.50.
 ## Todo
 
 - [ ] Alert history
-- [ ] Web UI (optional)
+- [ ] Translate for brazilian users
+- [ ] Web UI
+- [ ] Subscription tier
 
 # How can be improved in case it have milions of alerts to manage
 
@@ -35,3 +37,5 @@ The bot will notify you if PETR4 crosses R$37.50.
 - Load alerts into memory/redis server on load and update it on alert management.
 - Separate servers instances for ticket price pooling, for alerts cheking and bot handling with a redis server for shared memory.
 - Instantiate multiple servers instances, each one with its own data set.
+
+Made by Lucas Holz
