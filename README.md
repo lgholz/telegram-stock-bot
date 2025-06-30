@@ -30,4 +30,8 @@ The bot will notify you if PETR4 crosses R$37.50.
 
 # How can be improved in case it have milions of alerts to manage
 
-todo
+- Group alerts by ticket.
+- Split the ticker pooling and alerts loading into 10 chunks and reduce the loop time to run every 6 seconds instead every minute.
+- Load alerts into memory/redis server on load and update it on alert management.
+- Separate servers instances for ticket price pooling, for alerts cheking and bot handling with a redis server for shared memory.
+- Instantiate multiple servers instances, each one with its own data set.
