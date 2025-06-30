@@ -49,7 +49,7 @@ const runCheckAlarms = async () => {
 };
 
 async function checkAlarms() {
-  console.log();
+  console.log("\n" + formatDate(new Date()), "Checking alarms...");
 
   const alarms = await prisma.alarm.findMany();
   const prices = await getPrices(alarms);

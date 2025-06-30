@@ -24,12 +24,14 @@ export class StockBot {
 
   async init() {
     await this.bot.setMyCommands([
+      { command: "start", description: "See the welcome message" },
       { command: "alert", description: "Set a new stock price alert" },
       { command: "list", description: "List all alerts" },
       { command: "remove", description: "Remove an existing alert" },
       { command: "removeall", description: "Remove all alerts" },
     ]);
 
+    this.onCmdStart();
     this.onCmdAlert();
     this.onCmdList();
     this.onCmdRemove();
@@ -40,6 +42,33 @@ export class StockBot {
     this.bot.processUpdate(update);
   }
 
+  private onCmdStart = async () => {
+    this.bot.onText(/^\/start$/, async (msg) => {
+      const chatId = String(msg.chat.id);
+
+      const message = `
+      👋 Welcome to Stock Alert Bot!
+
+Get notified when your favorite stocks hit specific price targets on the B3 (Brasil Bolsa Balcão).
+
+📌 Here's what you can do:
+• /alert – Set a new price alert  
+• /list – View your active alerts  
+• /remove – Remove a specific alert
+• /removeall – Remove all alerts
+
+⚡️ Example:  
+/alert PETR4 above 37.50
+
+You’ll receive a notification when the condition is met.
+
+Ready to set your first alert? 🚀
+`;
+
+      await this.bot.sendMessage(chatId, message);
+    });
+  };
+
   private onCmdAlert = async () => {
     this.bot.onText(/^\/alert(?:\s+(.*))?$/, async (msg, match) => {
       const chatId = String(msg.chat.id);
@@ -48,7 +77,7 @@ export class StockBot {
       if (!params) {
         await this.bot.sendMessage(
           chatId,
-          "Creates an alert for a stock price.\nUsage: /alert TICKER CONDITION TARGET\nExample: /alert petr4 ABOVE 30.00"
+          "🚨 Creates an alert for a stock price.\n\nUsage:\n\t\t/alert TICKER CONDITION TARGET\n\nExamples:\n\t\t/alert PETR4 above 37.50\n\t\t/alert BBAS3 below 30"
         );
 
         return;
@@ -107,18 +136,22 @@ export class StockBot {
 
           await this.bot.sendMessage(
             chatId,
-            `Alert set for ${ticker}. You will be notified when the price changes.`
+            `Alert set for ${ticker} ${
+              direction === "ABOVE" ? `📈` : `📉`
+            }. You will be notified when the price changes.`
           );
         } else {
           // update the existing alarm
           await this.prisma.alarm.update({
             where: { id: existingAlarm.id },
-            data: { direction, target },
+            data: { direction, target, createdAt: new Date() },
           });
 
           await this.bot.sendMessage(
             chatId,
-            `Alert updated for ${ticker}. You will be notified when the price changes.`
+            `Alert updated for ${ticker} ${
+              direction === "ABOVE" ? `📈` : `📉`
+            }. You will be notified when the price changes.`
           );
         }
       } catch (error) {
@@ -164,7 +197,7 @@ export class StockBot {
       if (!ticker) {
         await this.bot.sendMessage(
           chatId,
-          "Usage: /remove TICKER\nExample: /remove PETR4"
+          `🧹 Remove an existing alert.\n\nUsage:\n\t\t/remove TICKER\n\nExample:\n\t\t/remove PETR4`
         );
         return;
       }
